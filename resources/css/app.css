@@ -1,0 +1,284 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@700&family=Inter:wght@400;700;900&display=swap');
+
+/* Tailwind Directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- STYLE GLOBAL & DASAR --- */
+body {
+    font-family: 'Inter', sans-serif;
+    overscroll-behavior: none; /* Mencegah overscroll */
+}
+
+.book-container {
+    height: 680px; /* Tinggi tetap untuk konsistensi */
+    background: #f8fafc; /* Warna dasar buku */
+}
+
+/* --- STYLE HALAMAN --- */
+.page {
+    display: none; /* Default tersembunyi */
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    transform: scale(0.95); /* Efek zoom saat transisi */
+    padding: 2rem 2.5rem;
+    overflow: hidden; /* Mencegah scroll di level halaman */
+    position: relative; /* Untuk elemen absolut di dalamnya */
+}
+
+.page.active {
+    display: flex; /* Hanya halaman aktif yang tampil */
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Background gradasi SVG untuk halaman konten */
+.page::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23e0f2fe' fill-opacity='0.4' d='M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,133.3C672,117,768,139,864,165.3C960,192,1056,224,1152,218.7C1248,213,1344,171,1392,149.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-size: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 0; /* Di belakang konten */
+}
+
+.page.active::before {
+    opacity: 1; /* Tampilkan background saat halaman aktif */
+}
+
+/* Konten di atas background */
+.page > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Scroll internal untuk halaman panjang */
+.page-content-scroll {
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 1rem; /* Ruang untuk scrollbar */
+}
+
+/* Penomoran halaman */
+.page-number-display {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.3);
+    font-size: 14px;
+    z-index: 2;
+}
+
+/* Sembunyikan background & nomor di halaman tertentu */
+.page[data-page="1"]::before,
+.page[data-page="13"]::before,
+.page[data-page="14"]::before, /* Termasuk halaman DB */
+.page[data-page="1"] .page-number-display,
+.page[data-page="13"] .page-number-display {
+    display: none;
+}
+
+/* --- ANIMASI & EFEK --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.7s ease-out forwards;
+    opacity: 0;
+}
+.fade-in.delay-1 { animation-delay: 0.2s; }
+.fade-in.delay-2 { animation-delay: 0.4s; }
+.fade-in.delay-3 { animation-delay: 0.6s; }
+.fade-in.delay-4 { animation-delay: 0.8s; }
+.fade-in.delay-5 { animation-delay: 1.0s; }
+
+/* --- STYLE INTERAKTIF (LANGKAH-LANGKAH - VERSI BARU) --- */
+.interactive-step {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    transition: background-color 0.2s ease-out, border-color 0.2s ease-out, transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.interactive-step .icon-container {
+    color: #6b7280;
+    transition: color 0.2s ease-out;
+    flex-shrink: 0;
+}
+
+.interactive-step:hover {
+    background-color: #f3f4f6;
+    transform: translateX(3px);
+    border-color: #9ca3af;
+}
+.interactive-step:hover .icon-container {
+    color: #3b82f6;
+}
+
+.interactive-step.active {
+    background-color: #dbeafe;
+    border-color: #3b82f6;
+    transform: translateX(5px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+.interactive-step.active .icon-container {
+    color: #2563eb;
+}
+.interactive-step.active p {
+    font-weight: 600;
+    color: #1e3a8a;
+}
+
+/* --- STYLE MOCKUP HP --- */
+.phone-mockup {
+    background: #111827;
+    padding: 8px;
+    border-radius: 32px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 80%;
+    max-width: 250px;
+}
+.phone-screen {
+    background: #000;
+    border-radius: 24px;
+    overflow: hidden;
+    aspect-ratio: 9 / 19.5;
+    width: 100%;
+}
+.phone-screen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* --- EFEK CAHAYA SILUET (HALUS - VERSI BARU) --- */
+@keyframes soft-glow {
+    0%, 100% { opacity: 0.1; transform: scale(1); filter: blur(50px); }
+    50% { opacity: 0.25; transform: scale(1.08); filter: blur(45px); }
+    75% { opacity: 0.15; transform: scale(1.04); filter: blur(55px); }
+}
+
+.silhouette-light {
+    position: absolute;
+    border-radius: 50%;
+    animation: soft-glow 14s infinite ease-in-out;
+}
+
+/* --- EFEK CAHAYA BINTIK (SPARKLE DINAMIS - VERSI BARU) --- */
+@keyframes sparkle-anim {
+    0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg) translateY(0px); filter: blur(1px); }
+    30% { opacity: 0.9; filter: blur(0.3px); }
+    60% { opacity: 0.7; transform: scale(1.2) rotate(150deg) translateY(-5px); filter: blur(0px); }
+    80% { opacity: 0.2; transform: scale(0.7) rotate(200deg) translateY(2px); filter: blur(0.8px); }
+}
+
+.sparkle {
+    position: absolute;
+    background-color: #fef08a;
+    border-radius: 50%;
+    animation-name: sparkle-anim;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    box-shadow: 0 0 6px #fef08a, 0 0 12px #fde047, 0 0 18px #facc15;
+}
+
+/* --- EFEK GLOW API LENTERA (SVG) --- */
+@keyframes fire-glow-animate {
+    0% { filter: drop-shadow(0 0 4px #ffedd5) drop-shadow(0 0 8px #fb923c) drop-shadow(0 0 12px #f97316); }
+    50% { filter: drop-shadow(0 0 8px #ffedd5) drop-shadow(0 0 16px #fb923c) drop-shadow(0 0 24px #f97316); }
+    100% { filter: drop-shadow(0 0 4px #ffedd5) drop-shadow(0 0 8px #fb923c) drop-shadow(0 0 12px #f97316); }
+}
+
+.fire-glow {
+    animation: fire-glow-animate 2.5s infinite ease-in-out;
+}
+
+/* --- LOADER --- */
+.loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --- STYLE TABEL DATABASE --- */
+#db-table-body tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+/* --- LOADER --- */
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/*
+ * ===============================================
+ * === STYLE SERTIFIKAT (VERSI LAMA - DIHAPUS) ===
+ * ===============================================
+ *
+ * Semua style sertifikat lama telah dihapus atau dikomentari
+ * untuk menghindari konflik dengan desain baru.
+ */
+
+/*
+.certificate-border-line,
+.certificate-border-inner,
+.certificate-border-gold,
+.certificate-batik-corner,
+.signature-line,
+.certificate-program-badge-new,
+.certificate-center-graphic-large,
+.decorative-line-top,
+.decorative-line-bottom {
+    // Properti-properti lama di sini yang sekarang dihapus/dikomentari
+}
+*/

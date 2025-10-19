@@ -1,0 +1,36 @@
+type User @table {
+  displayName: String!
+  createdAt: Timestamp!
+  email: String
+  photoUrl: String
+}
+
+type Application @table {
+  name: String!
+  createdAt: Timestamp!
+  description: String
+  owner: User
+}
+
+type Environment @table {
+  name: String!
+  createdAt: Timestamp!
+  description: String
+  owner: User
+}
+
+type DeploymentStatus @table {
+  name: String!
+  description: String
+}
+
+type Deployment @table {
+  version: String!
+  status: DeploymentStatus
+  deploymentDate: Timestamp!
+  createdAt: Timestamp!
+  notes: String
+  application: Application
+  environment: Environment
+  deployer: User
+}

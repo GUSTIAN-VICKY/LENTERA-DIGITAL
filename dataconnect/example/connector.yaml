@@ -1,0 +1,18 @@
+connectorId: example
+generate:
+  javascriptSdk:
+    - outputDir: ..\..\src\dataconnect-generated
+      package: "@dataconnect/generated"
+      packageJsonDir: ..\..
+      react: true
+      angular: false
+    - outputDir: ..\..\vendor\tightenco\ziggy\src\dataconnect-generated
+      package: "@dataconnect/generated"
+      packageJsonDir: ..\..\vendor\tightenco\ziggy
+      react: false
+      angular: false
+    - outputDir: ..\..\vendor\laravel\framework\src\Illuminate\Foundation\resources\exceptions\renderer\src\dataconnect-generated
+      package: "@dataconnect/generated"
+      packageJsonDir: ..\..\vendor\laravel\framework\src\Illuminate\Foundation\resources\exceptions\renderer
+      react: false
+      angular: false
