@@ -56,72 +56,54 @@ export default function Show({ participants }) {
     const handleViewDb = () => setShowDatabase(true);
     const handleBackFromDb = () => setShowDatabase(false);
 
-    // Efek untuk Sparkle (dengan logika penataan baru)
+    // Efek untuk Sparkle
      useEffect(() => {
         const createSparkles = (containerId) => {
             const container = document.getElementById(containerId);
             if (!container) return;
-            container.innerHTML = ''; // Bersihkan sparkle lama
-
-            const numberOfSparkles = 25; // Jumlah sparkles
+            container.innerHTML = '';
+            const numberOfSparkles = 25;
             for (let i = 0; i < numberOfSparkles; i++) {
                 const sparkle = document.createElement('div');
-                sparkle.className = 'sparkle sparkle-item'; // Class untuk styling
-
-                // Ukuran: Dominan sangat kecil
+                sparkle.className = 'sparkle sparkle-item';
                 const randomSizeFactor = Math.random();
                 let size;
-                if (randomSizeFactor < 0.7) { // 70% sangat kecil
-                    size = Math.random() * 1 + 0.5; // 0.5px - 1.5px
-                } else if (randomSizeFactor < 0.95) { // 25% sedang
-                     size = Math.random() * 1 + 1.5; // 1.5px - 2.5px
-                } else { // 5% besar
-                    size = Math.random() * 1.5 + 2.5; // 2.5px - 4px
-                }
-
-                // Opacity Awal: Bervariasi
-                const initialOpacity = Math.random() * 0.5 + 0.1; // 0.1 - 0.6
-
+                if (randomSizeFactor < 0.7) { size = Math.random() * 1 + 0.5; }
+                else if (randomSizeFactor < 0.95) { size = Math.random() * 1 + 1.5; }
+                else { size = Math.random() * 1.5 + 2.5; }
+                const initialOpacity = Math.random() * 0.5 + 0.1;
                 sparkle.style.width = `${size}px`;
                 sparkle.style.height = `${size}px`;
                 sparkle.style.opacity = initialOpacity;
-
-                // Posisi: Lebih menyebar ke pinggir
                 let top, left;
-                const edgeBias = 0.8; // 80% kemungkinan di pinggir
+                const edgeBias = 0.8;
                 if (Math.random() < edgeBias) {
-                    if (Math.random() < 0.5) { // Pinggir atas/bawah (area 0-20% & 80-100%)
+                    if (Math.random() < 0.5) {
                         top = Math.random() < 0.5 ? Math.random() * 20 : Math.random() * 20 + 80;
                         left = Math.random() * 100;
-                    } else { // Pinggir kiri/kanan (area 0-20% & 80-100%)
+                    } else {
                         left = Math.random() < 0.5 ? Math.random() * 20 : Math.random() * 20 + 80;
                         top = Math.random() * 100;
                     }
                 } else {
-                    // Posisi lebih ke tengah (area 20%-80%)
                      top = Math.random() * 60 + 20;
                      left = Math.random() * 60 + 20;
                 }
-
                 sparkle.style.top = `${Math.max(0, Math.min(100, top))}%`;
                 sparkle.style.left = `${Math.max(0, Math.min(100, left))}%`;
-
-                // Animasi: Variasi durasi dan delay
-                sparkle.style.animationDelay = `${Math.random() * 7}s`; // Delay hingga 7s
-                sparkle.style.animationDuration = `${Math.random() * 3 + 5}s`; // Durasi 5-8s
-
+                sparkle.style.animationDelay = `${Math.random() * 7}s`;
+                sparkle.style.animationDuration = `${Math.random() * 3 + 5}s`;
                 container.appendChild(sparkle);
             }
         };
-
-        // Jalankan hanya di halaman Cover (0) dan Sertifikat (12)
         if (currentPageIndex === 0) createSparkles('sparkle-container');
         if (currentPageIndex === totalPagesToDisplay - 1) createSparkles('back-sparkle-container');
     }, [currentPageIndex, totalPagesToDisplay]);
 
-
     return (
-        <div className="bg-gray-200 flex flex-col items-center justify-center min-h-screen p-4">
+        // --- PERUBAHAN className DI SINI ---
+        // Hapus bg-gray-200, p-4. Tambahkan w-full
+        <div className="flex flex-col items-center justify-center min-h-screen w-full">
             <Head>
                 <title>Lentera Digital - Panduan Interaktif</title>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -132,7 +114,9 @@ export default function Show({ participants }) {
             <CertificateTemplate />
             <ProgressBar currentPage={currentPageIndex + 1} totalPages={totalPagesToDisplay} />
 
-            <main id="book-container" className="book-container w-full max-w-2xl bg-white shadow-2xl rounded-xl my-8 overflow-hidden relative">
+            {/* --- PERUBAHAN className DI SINI --- */}
+            {/* Hapus max-w-2xl, rounded-xl, my-8, shadow-2xl. Tambahkan flex-grow */}
+            <main id="book-container" className="book-container w-full bg-white overflow-hidden relative flex-grow">
                 {showDatabase ? (
                     <Database isActive={true} participants={participants} />
                 ) : (
@@ -148,6 +132,8 @@ export default function Show({ participants }) {
                 )}
             </main>
 
+            {/* --- PERUBAHAN className DI SINI --- */}
+            {/* Ganti max-w-2xl menjadi w-full, hapus rounded-b-xl */}
             {currentPageIndex > 0 && (
                 <FooterNav
                     onNext={handleNext}
@@ -156,6 +142,8 @@ export default function Show({ participants }) {
                     totalPages={totalPagesToDisplay}
                     isDbPage={showDatabase}
                     onBackFromDb={handleBackFromDb}
+                    // Tambahkan className agar footer juga full-width
+                    className="w-full"
                 />
             )}
         </div>

@@ -1,4 +1,4 @@
-/* Import Google Fonts */
+/* Import Google Fonts (termasuk font sertifikat) */
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@700&family=Inter:wght@400;700;900&display=swap');
 
 /* Tailwind Directives */
@@ -6,40 +6,55 @@
 @tailwind components;
 @tailwind utilities;
 
-/* --- STYLE GLOBAL & DASAR --- */
+/* --- STYLE GLOBAL & DASAR (DENGAN PERBAIKAN VH) --- */
+html {
+    height: 100%; /* Pastikan html mengisi tinggi viewport */
+    overscroll-behavior: none; /* Cegah scroll berlebih di level html */
+}
+
 body {
     font-family: 'Inter', sans-serif;
-    overscroll-behavior: none; /* Mencegah overscroll */
+    overscroll-behavior: none; /* Cegah scroll berlebih di body */
+    /* Gunakan --vh yang dihitung dari JS, fallback ke 1vh jika JS belum jalan */
+    min-height: calc(var(--vh, 1vh) * 100);
+    height: 100%;
+    display: flex; /* Gunakan flex untuk layout */
+    flex-direction: column; /* Arahkan flex ke bawah */
+    margin: 0; /* Hapus margin default */
+    padding: 0; /* Hapus padding default */
 }
 
 .book-container {
-    height: 680px; /* Tinggi tetap untuk konsistensi */
-    background: #f8fafc; /* Warna dasar buku */
+    background: #f8fafc;
+    width: 100%; /* Lebar penuh */
+    flex-grow: 1; /* Biarkan container mengisi sisa tinggi body */
+    display: flex; /* Gunakan flex */
+    flex-direction: column; /* Arahkan ke bawah */
+    position: relative; /* Wajib ada untuk elemen absolut di dalamnya */
+    overflow: hidden; /* Sembunyikan overflow container */
 }
 
 /* --- STYLE HALAMAN --- */
 .page {
-    display: none; /* Default tersembunyi */
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+    /* Default tersembunyi */
+    position: absolute; /* Tetap absolut saat tidak aktif */
+    inset: 0; /* Mengisi seluruh container saat absolut */
     opacity: 0;
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
     transform: scale(0.95); /* Efek zoom saat transisi */
-    padding: 2rem 2.5rem;
-    overflow: hidden; /* Mencegah scroll di level halaman */
-    position: relative; /* Untuk elemen absolut di dalamnya */
+    padding: 2rem 2.5rem; /* Padding internal halaman */
+    display: none; /* Tetap display none awalnya */
 }
 
 .page.active {
-    display: flex; /* Hanya halaman aktif yang tampil */
+    display: flex; /* Tampilkan halaman aktif */
     flex-direction: column;
-    justify-content: center;
-    position: relative;
+    position: relative; /* Relatif saat aktif */
     opacity: 1;
     transform: scale(1);
+    flex-grow: 1; /* Biarkan halaman aktif mengisi .book-container */
+    inset: auto; /* Hapus inset saat aktif */
+    overflow: hidden; /* Halaman tetap tidak boleh scroll */
 }
 
 /* Background gradasi SVG untuk halaman konten */
@@ -71,7 +86,7 @@ body {
 
 /* Scroll internal untuk halaman panjang */
 .page-content-scroll {
-    height: 100%;
+    flex-grow: 1; /* Area konten ini yang boleh scroll */
     overflow-y: auto;
     padding-right: 1rem; /* Ruang untuk scrollbar */
 }
@@ -245,40 +260,116 @@ body {
     background-color: #f9fafb;
 }
 
-/* --- LOADER --- */
-.loader {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
+/* --- Tambahan untuk Desain Sertifikat --- */
+.certificate-border-line {
+    position: absolute;
+    inset: 15px;
+    border: 3px solid #075985;
+    border-radius: 10px;
+    z-index: 5;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.certificate-border-inner {
+    position: absolute;
+    inset: 25px;
+    border: 1px solid #94a3b8;
+    border-radius: 8px;
+    z-index: 5;
 }
 
-/*
- * ===============================================
- * === STYLE SERTIFIKAT (VERSI LAMA - DIHAPUS) ===
- * ===============================================
- *
- * Semua style sertifikat lama telah dihapus atau dikomentari
- * untuk menghindari konflik dengan desain baru.
- */
+.certificate-ribbon-top-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-top: 60px solid #0ea5e9;
+    border-right: 60px solid transparent;
+    filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.2));
+    z-index: 10;
+}
 
-/*
-.certificate-border-line,
-.certificate-border-inner,
-.certificate-border-gold,
-.certificate-batik-corner,
-.signature-line,
-.certificate-program-badge-new,
-.certificate-center-graphic-large,
-.decorative-line-top,
+.certificate-ribbon-bottom-right {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-bottom: 60px solid #0ea5e9;
+    border-left: 60px solid transparent;
+    filter: drop-shadow(-2px -2px 3px rgba(0,0,0,0.2));
+    z-index: 10;
+}
+
+/* Badge Program Ditingkatkan */
+.certificate-program-badge-new {
+    background: linear-gradient(to right, #fcd34d, #ea580c);
+    color: #422006;
+    padding: 7px 18px;
+    border-radius: 9999px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25), inset 0 2px 5px rgba(255,255,255,0.4);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transition: all 0.2s ease-in-out;
+}
+
+.certificate-program-badge-new:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3), inset 0 2px 5px rgba(255,255,255,0.5);
+}
+
+/* Styling untuk gambar logo di dalam badge */
+.certificate-program-badge-new img {
+    width: 24px;
+    height: 24px;
+    margin-left: -4px;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3));
+    object-fit: contain;
+}
+
+/* Garis pemisah untuk tanda tangan */
+.signature-line {
+    border-bottom: 1px solid #64748b;
+    width: 280px;
+    margin: 10px auto 5px auto;
+}
+
+/* Watermark/Graphic di Tengah (ukuran 350px tetap) */
+.certificate-center-graphic-large {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.08;
+    width: 350px;
+    height: 350px;
+    object-fit: contain;
+    filter: grayscale(100%);
+    z-index: 1;
+}
+
+/* Garis dekoratif horisontal */
+.decorative-line-top, .decorative-line-bottom {
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #a7d9f7, transparent);
+    margin: 20px auto;
+    opacity: 0.6;
+}
 .decorative-line-bottom {
-    // Properti-properti lama di sini yang sekarang dihapus/dikomentari
+    margin-top: 30px;
 }
-*/
+
+/* EFEK CAHAYA AMBIENT PULSE (untuk Cover) */
+@keyframes light-pulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.02); }
+}
+
